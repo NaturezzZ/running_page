@@ -1,6 +1,6 @@
 import * as mapboxPolyline from '@mapbox/polyline';
 import gcoord from 'gcoord';
-import { WebMercatorViewport } from 'viewport-mercator-project';
+import { WebMercatorViewport } from '@math.gl/web-mercator';
 import { chinaGeojson, RPGeometry } from '@/static/run_countries';
 import worldGeoJson from '@surbowl/world-geo-json-zh/world.zh.json';
 import { chinaCities } from '@/static/city';
@@ -17,6 +17,7 @@ import {
   SWIMMING_COLOR,
   RUN_COLOR,
   RUN_TRAIL_COLOR,
+  MAP_TILE_STYLES,
 } from './const';
 import {
   FeatureCollection,
@@ -225,7 +226,7 @@ const pathForRun = (run: Activity): Coordinate[] => {
       }
     }
     return c;
-  } catch (err) {
+  } catch (_err) {
     return [];
   }
 };
@@ -423,6 +424,20 @@ const sortDateFunc = (a: Activity, b: Activity) => {
 };
 const sortDateFuncReverse = (a: Activity, b: Activity) => sortDateFunc(b, a);
 
+const getMapStyle = (vendor: string, styleName: string, token: string) => {
+  const style = (MAP_TILE_STYLES as any)[vendor][styleName];
+  if (!style) {
+    return MAP_TILE_STYLES.default;
+  }
+  if (vendor === 'maptiler' || vendor === 'stadiamaps') {
+    return style + token;
+  }
+  return style;
+};
+
+const isTouchDevice = () =>
+  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 export {
   titleForShow,
   formatPace,
@@ -442,4 +457,6 @@ export {
   getBoundsForGeoData,
   formatRunTime,
   convertMovingTime2Sec,
+  getMapStyle,
+  isTouchDevice,
 };
