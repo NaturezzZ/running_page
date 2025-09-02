@@ -26,3 +26,8 @@ route.png
 route.svg
 
 .env
+
+FIT_OUT/*.fit
+GPX_OUT/*.gpx
+imported.json
+run_page/data.db
